@@ -16,4 +16,4 @@ ENV ORACLE_JDBC_USER=coe_admin
 ENV ORACLE_JDBC_PASSWORD=Outsystemsadmin1
 
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-cp", "app.jar:lib/ojdbc11.jar", "org.springframework.boot.loader.JarLauncher"]

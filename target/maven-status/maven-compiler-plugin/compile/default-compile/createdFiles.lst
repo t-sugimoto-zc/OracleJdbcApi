@@ -1,5 +1,0 @@
-com\example\oraclejdbcapi\service\TransactionService.class
-com\example\oraclejdbcapi\service\TransactionService$Session.class
-com\example\oraclejdbcapi\controller\QueryController.class
-com\example\oraclejdbcapi\controller\TransactionController.class
-com\example\oraclejdbcapi\OracleJdbcApiApplication.class

@@ -44,23 +44,29 @@ public class TransactionService {
             return Map.of("error", "無効なセッションIDです。");
         }
 
-        try (Statement stmt = session.conn.createStatement();
-                ResultSet rs = stmt.executeQuery(sql)) {
+        try (Statement stmt = session.conn.createStatement()) {
+            boolean isResultSet = stmt.execute(sql);
 
-            List<Map<String, Object>> results = new ArrayList<>();
-            ResultSetMetaData meta = rs.getMetaData();
-            int columnCount = meta.getColumnCount();
+            if (isResultSet) {
+                try (ResultSet rs = stmt.getResultSet()) {
+                    List<Map<String, Object>> results = new ArrayList<>();
+                    ResultSetMetaData meta = rs.getMetaData();
+                    int columnCount = meta.getColumnCount();
 
-            while (rs.next()) {
-                Map<String, Object> row = new LinkedHashMap<>();
-                for (int i = 1; i <= columnCount; i++) {
-                    row.put(meta.getColumnName(i), rs.getObject(i));
+                    while (rs.next()) {
+                        Map<String, Object> row = new LinkedHashMap<>();
+                        for (int i = 1; i <= columnCount; i++) {
+                            row.put(meta.getColumnName(i), rs.getObject(i));
+                        }
+                        results.add(row);
+                    }
+
+                    return results;
                 }
-                results.add(row);
+            } else {
+                int updateCount = stmt.getUpdateCount();
+                return Map.of("message", "更新が成功しました。", "updateCount", updateCount);
             }
-
-            return results;
-
         } catch (SQLException e) {
             return Map.of("error", "SQL実行中にエラーが発生しました。", "message", e.getMessage());
         }
